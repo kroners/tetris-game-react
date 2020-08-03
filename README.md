@@ -2,6 +2,7 @@ Tetris game built with React and Hooks
 
 Following a tutorial 
 - Source: https://www.youtube.com/watch?v=ZGOaCxX8HIU
+- Adding folders hooks and helpers for a better organization of code.
 
 Applying additional details:
 - https://www.robinwieruch.de/react-folder-structure
