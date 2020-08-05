@@ -23,6 +23,10 @@ export const useStage = (player, resetPlayer) => {
                 })
             });
             console.log({player})
+
+            // Then check if we collided
+            if(player.collided) resetPlayer();
+            
             return newStage;
         };
         setStage(prev => updateStage(prev));

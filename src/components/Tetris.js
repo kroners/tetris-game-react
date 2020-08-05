@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { createStage } from '../helpers/gameHelpers';
+import { createStage, checkCollision } from '../helpers/gameHelpers';
 
 // Styled components
 import { StyledTetrisWrapper, StyledTetris } from './styles/StyledTetris';
@@ -18,23 +18,37 @@ const Tetris = () => {
     const [dropTime, setDropTime] = useState(null);
     const [gameOver, setGameOver] = useState(false);
 
-    const [player, updatePlayerPosition, resetPlayer] = usePlayer();
+    const [player, updatePlayerPosition, resetPlayer, playerRotate] = usePlayer();
     const [stage, setStage] = useStage(player, resetPlayer);
     console.log({stage})
     console.log('re-render');
 
     const movePlayer = dir => {
-        updatePlayerPosition({ x: dir, y: 0});
+        if(!checkCollision(player, stage, {x: dir, y:0})) {
+            updatePlayerPosition({ x: dir, y: 0});
+        }
     }
 
     const startGame = () => {
+        console.log('test');
         // Reset all
         setStage(createStage());
         resetPlayer();
+        setGameOver(false);
     }
 
     const drop = () => {
-        updatePlayerPosition({ x: 0, y: 1, collided: false });
+        if(!checkCollision(player, stage, {x: 0, y:1})) {
+            updatePlayerPosition({ x: 0, y: 1, collided: false });
+        } else {
+            // Game over
+            if(player.pos.y < 1) {
+                console.log('GAME OVER!!!');
+                setGameOver(true);
+                setDropTime(null);
+            }
+            updatePlayerPosition({ x: 0, y: 0, collided: true });
+        }
     }
 
     const dropPlayer = () => {
@@ -49,6 +63,11 @@ const Tetris = () => {
                 movePlayer(1);
             } else if(keyCode === 40) {
                 dropPlayer();
+            } else if(keyCode === 38 || keyCode === 32 || keyCode === 68) {
+                playerRotate(stage, 1);
+            } else if(keyCode === 65) {
+                // Add to rotate in different direction
+                playerRotate(stage, -1);
             }
         }
     }
